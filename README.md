@@ -24,8 +24,7 @@ Open [http://localhost:3000](http://localhost:3000).
 |----------|-------------|
 | `NEXT_PUBLIC_API_URL` | SaaSSpotter API base URL |
 
-**Production:** `https://f6rj7peypk.execute-api.ap-south-1.amazonaws.com`  
-**Local backend:** `http://localhost:8000`
+
 
 ## Scripts
 
