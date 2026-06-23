@@ -13,7 +13,7 @@ export function PainPointGrid({ items }: PainPointGridProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
       {items.map((painPoint, index) => (
         <div
           key={painPoint.id}

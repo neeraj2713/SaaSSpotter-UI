@@ -26,35 +26,38 @@ export function PaginationControls({
   if (total === 0) return null;
 
   return (
-    <div className="flex flex-col items-center gap-4 pt-8 sm:flex-row sm:justify-between">
-      <p className="text-base text-muted-foreground">
-        Showing page{" "}
+    <div className="flex flex-col gap-4 pt-6 sm:flex-row sm:items-center sm:justify-between sm:pt-8">
+      <p className="text-center text-sm text-muted-foreground sm:text-left sm:text-base">
+        Page{" "}
         <span className="font-medium text-foreground">{page}</span> of{" "}
         <span className="font-medium text-foreground">{totalPages}</span>
-        <span className="mx-2 text-border">·</span>
-        <span className="font-medium text-foreground">{total}</span> ideas total
+        <span className="hidden sm:inline">
+          <span className="mx-2 text-border">·</span>
+          <span className="font-medium text-foreground">{total}</span> ideas total
+        </span>
       </p>
 
-      <div className="flex items-center gap-2">
+      <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:items-center">
         {isLoading && (
-          <Loader2 className="size-4 animate-spin text-primary" />
+          <Loader2 className="col-span-2 mx-auto size-4 animate-spin text-primary sm:col-span-1 sm:mx-0" />
         )}
         <Button
           variant="outline"
           size="sm"
           disabled={!hasPrev || isLoading}
           onClick={() => onPageChange(page - 1)}
-          className="border-border/60 bg-card/60 hover:bg-primary/10 hover:text-primary"
+          className="min-h-11 border-border/60 bg-card/60 hover:bg-primary/10 hover:text-primary sm:min-h-8"
         >
           <ChevronLeft className="size-4" />
-          Previous
+          <span className="sm:hidden">Prev</span>
+          <span className="hidden sm:inline">Previous</span>
         </Button>
         <Button
           variant="outline"
           size="sm"
           disabled={!hasNext || isLoading}
           onClick={() => onPageChange(page + 1)}
-          className="border-border/60 bg-card/60 hover:bg-primary/10 hover:text-primary"
+          className="min-h-11 border-border/60 bg-card/60 hover:bg-primary/10 hover:text-primary sm:min-h-8"
         >
           Next
           <ChevronRight className="size-4" />

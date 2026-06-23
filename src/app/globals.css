@@ -128,10 +128,10 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground text-lg leading-relaxed;
+    @apply bg-background text-foreground text-base leading-relaxed sm:text-lg;
   }
   html {
-    @apply font-sans scroll-smooth;
+    @apply scroll-smooth font-sans overflow-x-hidden;
   }
   h1, h2, h3, h4 {
     @apply font-heading tracking-tight;
@@ -167,5 +167,18 @@
 
   .animate-spotlight {
     animation: spotlight 2s ease 0.75s 1 forwards;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .touch-target {
+    @apply min-h-11 min-w-11;
   }
 }

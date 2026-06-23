@@ -7,7 +7,7 @@ interface EmptyStateProps {
 
 export function EmptyState({ filtered = false }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-dashed border-border/60 bg-card/40 px-6 py-20 text-center backdrop-blur-sm">
+    <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border/60 bg-card/40 px-4 py-12 text-center backdrop-blur-sm sm:gap-5 sm:px-6 sm:py-20">
       <div className="flex size-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20">
         {filtered ? (
           <SearchX className="size-8 text-primary/70" />
@@ -16,7 +16,7 @@ export function EmptyState({ filtered = false }: EmptyStateProps) {
         )}
       </div>
       <div className="max-w-sm space-y-2">
-        <p className="text-xl font-bold">
+        <p className="text-lg font-bold sm:text-xl">
           {filtered ? "No ideas in this category" : "No pain points spotted yet"}
         </p>
         <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">

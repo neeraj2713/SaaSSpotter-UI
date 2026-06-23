@@ -52,14 +52,14 @@ export function FeedPage({ industryTag }: FeedPageProps) {
 
   return (
     <div className="relative w-full overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <BackgroundBeams className="opacity-30" />
+      <div className="pointer-events-none absolute inset-0 -z-10 max-sm:opacity-15 sm:opacity-30">
+        <BackgroundBeams />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
+      <div className="relative mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-12">
         <HeroSection industryTag={industryTag} totalCount={data?.total} />
 
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           <IndustryFilterBar
             activeTag={industryTag}
             discoveredTags={discoveredTags}

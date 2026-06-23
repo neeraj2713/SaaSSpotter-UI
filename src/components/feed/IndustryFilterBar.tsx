@@ -33,14 +33,14 @@ export function IndustryFilterBar({
   }
 
   return (
-    <section className="space-y-4 rounded-2xl border border-border/40 bg-card/20 p-5 backdrop-blur-sm">
-      <div className="flex items-center gap-2 text-base font-semibold text-muted-foreground">
-        <Filter className="size-5 text-primary" />
+    <section className="space-y-3 rounded-2xl border border-border/40 bg-card/20 p-4 backdrop-blur-sm sm:space-y-4 sm:p-5">
+      <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground sm:text-base">
+        <Filter className="size-4 shrink-0 text-primary sm:size-5" />
         <span>Filter by industry</span>
       </div>
 
-      <div className="-mx-1 overflow-x-auto px-1 pb-1">
-        <div className="flex w-max min-w-full flex-wrap gap-2.5 sm:w-auto">
+      <div className="relative -mx-1">
+        <div className="scrollbar-hide flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-2 sm:flex-wrap sm:overflow-visible sm:pb-0">
           <FilterChip
             label="All"
             active={!activeTag}
@@ -55,6 +55,7 @@ export function IndustryFilterBar({
             />
           ))}
         </div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background/80 to-transparent sm:hidden" />
       </div>
     </section>
   );
@@ -69,12 +70,17 @@ function FilterChip({
   active: boolean;
   onClick: () => void;
 }) {
+  const chipClassName = cn(
+    "shrink-0 snap-start whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-medium sm:px-5 sm:text-base",
+    "min-h-11 touch-manipulation",
+  );
+
   if (active) {
     return (
       <HoverBorderGradient
         as="button"
-        containerClassName="rounded-full"
-        className="bg-background px-5 py-2 text-base font-semibold text-foreground"
+        containerClassName="rounded-full shrink-0 snap-start"
+        className={cn(chipClassName, "bg-background font-semibold text-foreground")}
         onClick={onClick}
       >
         {label}
@@ -87,8 +93,9 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "shrink-0 rounded-full border border-border/60 bg-background/60 px-5 py-2 text-base font-medium text-muted-foreground backdrop-blur-sm transition-all duration-200",
-        "hover:border-primary/30 hover:bg-primary/10 hover:text-foreground",
+        chipClassName,
+        "border border-border/60 bg-background/60 text-muted-foreground backdrop-blur-sm transition-all duration-200",
+        "hover:border-primary/30 hover:bg-primary/10 hover:text-foreground active:scale-95",
       )}
     >
       {label}

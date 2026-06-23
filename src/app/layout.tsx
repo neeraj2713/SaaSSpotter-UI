@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
@@ -18,6 +18,12 @@ export const metadata: Metadata = {
     "Discover validated business pain points and actionable Micro-SaaS ideas. Turn real complaints into your next startup.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,7 +34,7 @@ export default function RootLayout({
       lang="en"
       className={`${plusJakarta.variable} dark h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col font-sans">
+      <body className="flex min-h-full flex-col overflow-x-hidden font-sans pb-[env(safe-area-inset-bottom)]">
         <QueryProvider>
           <DiscoveredTagsProvider>
             <Header />
