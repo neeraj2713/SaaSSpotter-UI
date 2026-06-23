@@ -43,10 +43,17 @@ Authenticated features (saved ideas, alerts) use `/api/user/*` BFF routes that f
 
 ## Deployment checklist
 
-1. Set **`API_URL`** in Vercel (e.g. `https://f6rj7peypk.execute-api.ap-south-1.amazonaws.com`)
-2. Redeploy after adding the env var
-3. Verify API health: `curl $API_URL/health`
-4. Verify proxy: `curl "https://your-app.vercel.app/api/v1/painpoints?page=1&page_size=5"`
+1. Set these in **Vercel → Settings → Environment Variables** (Production):
+   - `API_URL` — AWS API Gateway URL
+   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+   - `CLERK_SECRET_KEY`
+   - `NEXT_PUBLIC_CLERK_SIGN_IN_URL` = `/sign-in`
+2. In **Clerk dashboard**, add `https://saas-spotter-ui.vercel.app` as an allowed domain.
+3. Redeploy after adding env vars (required — old builds won't pick them up).
+4. Verify API health: `curl $API_URL/health`
+5. Verify proxy: `curl "https://saas-spotter-ui.vercel.app/api/v1/painpoints?page=1&page_size=5"`
+
+If you see `MIDDLEWARE_INVOCATION_FAILED`, it is usually missing Clerk keys on Vercel or an outdated `middleware.ts` file (use `src/proxy.ts` on Next.js 16+).
 
 ## Routes
 
