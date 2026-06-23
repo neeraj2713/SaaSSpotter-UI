@@ -1,15 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
+import { DM_Sans, Outfit } from "next/font/google";
+import { AppBackground } from "@/components/layout/AppBackground";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { DiscoveredTagsProvider } from "@/components/providers/DiscoveredTagsProvider";
+import { CompareBar } from "@/components/compare/CompareBar";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import "./globals.css";
 
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["500", "600", "700"],
+});
+
+const dmSans = DM_Sans({
+  variable: "--font-dm",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -30,19 +39,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${plusJakarta.variable} dark h-full antialiased`}
-    >
-      <body className="flex min-h-full flex-col overflow-x-hidden font-sans pb-[env(safe-area-inset-bottom)]">
-        <QueryProvider>
-          <DiscoveredTagsProvider>
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </DiscoveredTagsProvider>
-        </QueryProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html
+        lang="en"
+        className={`${outfit.variable} ${dmSans.variable} h-full antialiased`}
+        suppressHydrationWarning
+      >
+        <body className="flex min-h-full flex-col overflow-x-hidden pb-[env(safe-area-inset-bottom)]">
+          <ThemeProvider>
+            <QueryProvider>
+              <AppBackground />
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <CompareBar />
+            </QueryProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

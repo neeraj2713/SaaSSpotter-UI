@@ -1,0 +1,14 @@
+import { cn } from "@/lib/utils";
+
+export function TrendingBadge({ className }: { className?: string }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full bg-play/15 px-2 py-0.5 text-[11px] font-semibold text-play-foreground",
+        className,
+      )}
+    >
+      Hot
+    </span>
+  );
+}

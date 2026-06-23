@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { BackgroundBeams } from "@/components/ui/background-beams";
-import { useDiscoveredTags } from "@/components/providers/DiscoveredTagsProvider";
+import { Suspense, useMemo, useState } from "react";
+import { NewSinceVisitBanner } from "@/components/feed/NewSinceVisitBanner";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import { getPainPoints } from "@/lib/api";
+import type { SortField } from "@/lib/types";
 import { HeroSection } from "@/components/feed/HeroSection";
 import { PainPointGrid } from "@/components/feed/PainPointGrid";
 import { IndustryFilterBar } from "@/components/feed/IndustryFilterBar";
+import { FeedToolbar } from "@/components/feed/FeedToolbar";
+import { PipelineBanner } from "@/components/feed/PipelineBanner";
 import { PaginationControls } from "@/components/feed/PaginationControls";
 import { EmptyState } from "@/components/feed/EmptyState";
 import { FeedSkeleton } from "@/components/feed/FeedSkeleton";
@@ -21,16 +24,31 @@ interface FeedPageProps {
 }
 
 export function FeedPage({ industryTag }: FeedPageProps) {
-  const [page, setPage] = useState(1);
-  const { tags: discoveredTags, addTags } = useDiscoveredTags();
+  const searchParams = useSearchParams();
+  const cluster = searchParams.get("cluster") ?? undefined;
+  const since = searchParams.get("since") ?? undefined;
+  const q = searchParams.get("q") ?? undefined;
+  const sort = (searchParams.get("sort") as SortField) ?? "created_at";
+  const trending = searchParams.get("trending") === "true";
 
-  useEffect(() => {
-    setPage(1);
-  }, [industryTag]);
+  const filterKey = useMemo(
+    () => `${industryTag ?? ""}|${q ?? ""}|${sort}|${trending}|${cluster ?? ""}|${since ?? ""}`,
+    [industryTag, q, sort, trending, cluster, since],
+  );
+
+  const [pageByFilter, setPageByFilter] = useState<Record<string, number>>({});
+  const page = pageByFilter[filterKey] ?? 1;
+
+  const setPage = (nextPage: number) => {
+    setPageByFilter((prev) => ({ ...prev, [filterKey]: nextPage }));
+  };
 
   const queryKey = useMemo(
-    () => ["painpoints", { page, page_size: PAGE_SIZE, industry_tag: industryTag }],
-    [page, industryTag],
+    () => [
+      "painpoints",
+      { page, page_size: PAGE_SIZE, industry_tag: industryTag, q, sort, trending, cluster, since },
+    ],
+    [page, industryTag, q, sort, trending, cluster, since],
   );
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery({
@@ -40,71 +58,71 @@ export function FeedPage({ industryTag }: FeedPageProps) {
         page,
         page_size: PAGE_SIZE,
         industry_tag: industryTag,
+        cluster,
+        q: q && q.length >= 2 ? q : undefined,
+        sort,
+        order: "desc",
+        trending: trending || undefined,
+        since,
       }),
+    placeholderData: keepPreviousData,
   });
 
-  useEffect(() => {
-    if (!data?.items.length) return;
-    addTags(data.items.map((item) => item.industry_tag));
-  }, [data?.items, addTags]);
-
   const showSkeleton = isLoading && !data;
+  const showFetchingOverlay = isFetching && !isLoading && !!data;
 
   return (
-    <div className="relative w-full overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10 max-sm:opacity-15 sm:opacity-30">
-        <BackgroundBeams />
-      </div>
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <HeroSection industryTag={industryTag} totalCount={data?.total} />
 
-      <div className="relative mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-12">
-        <HeroSection industryTag={industryTag} totalCount={data?.total} />
+      <div className="space-y-5">
+        <FeedToolbar industryTag={industryTag} total={data?.total} />
+        <IndustryFilterBar activeTag={industryTag} />
 
-        <div className="space-y-6 sm:space-y-8">
-          <IndustryFilterBar
-            activeTag={industryTag}
-            discoveredTags={discoveredTags}
-          />
+        <Suspense fallback={null}>
+          <NewSinceVisitBanner />
+        </Suspense>
 
-          {isError && (
-            <div className="flex flex-col items-start gap-4 rounded-2xl border border-destructive/30 bg-destructive/10 p-5 backdrop-blur-sm">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="mt-0.5 size-5 shrink-0 text-destructive" />
-                <div className="space-y-1">
-                  <p className="font-medium">Couldn&apos;t load ideas</p>
-                  <p className="text-base text-muted-foreground">
-                    {error instanceof Error
-                      ? error.message
-                      : "Check your connection and retry."}
-                  </p>
-                </div>
+        <PipelineBanner isEmpty={!showSkeleton && !!data && data.items.length === 0} />
+
+        {isError && (
+          <div className="surface flex flex-col items-start gap-3 p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="mt-0.5 size-5 shrink-0 text-destructive" />
+              <div className="space-y-1">
+                <p className="font-medium">Couldn&apos;t load ideas</p>
+                <p className="text-sm text-muted-foreground">
+                  {error instanceof Error
+                    ? error.message
+                    : "Check your connection and retry."}
+                </p>
               </div>
-              <Button variant="outline" size="sm" onClick={() => refetch()}>
-                Try again
-              </Button>
             </div>
-          )}
+            <Button variant="outline" size="sm" onClick={() => refetch()}>
+              Try again
+            </Button>
+          </div>
+        )}
 
-          {showSkeleton && <FeedSkeleton />}
+        {showSkeleton && <FeedSkeleton />}
 
-          {!showSkeleton && data && data.items.length === 0 && (
-            <EmptyState filtered={Boolean(industryTag)} />
-          )}
+        {!showSkeleton && data && data.items.length === 0 && (
+          <EmptyState filtered={Boolean(industryTag || q || trending)} />
+        )}
 
-          {!showSkeleton && data && data.items.length > 0 && (
-            <>
-              <PainPointGrid items={data.items} />
-
-              <PaginationControls
-                page={data.page}
-                pageSize={data.page_size}
-                total={data.total}
-                hasNext={data.has_next}
-                isLoading={isFetching}
-                onPageChange={setPage}
-              />
-            </>
-          )}
-        </div>
+        {!showSkeleton && data && data.items.length > 0 && (
+          <div className={showFetchingOverlay ? "opacity-60 transition-opacity" : ""}>
+            <PainPointGrid items={data.items} />
+            <PaginationControls
+              page={data.page}
+              pageSize={data.page_size}
+              total={data.total}
+              hasNext={data.has_next}
+              isLoading={isFetching}
+              onPageChange={setPage}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Radar, SearchX, Sparkles } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
 
 interface EmptyStateProps {
@@ -7,38 +7,28 @@ interface EmptyStateProps {
 
 export function EmptyState({ filtered = false }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border/60 bg-card/40 px-4 py-12 text-center backdrop-blur-sm sm:gap-5 sm:px-6 sm:py-20">
-      <div className="flex size-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20">
-        {filtered ? (
-          <SearchX className="size-8 text-primary/70" />
-        ) : (
-          <Radar className="size-8 text-primary/70" />
-        )}
+    <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border/60 px-6 py-16 text-center">
+      <div className="flex size-14 items-center justify-center rounded-2xl bg-muted text-2xl">
+        {filtered ? <Search className="size-6 text-muted-foreground" /> : "👀"}
       </div>
-      <div className="max-w-sm space-y-2">
-        <p className="text-lg font-bold sm:text-xl">
-          {filtered ? "No ideas in this category" : "No pain points spotted yet"}
+      <div className="max-w-sm space-y-1">
+        <p className="font-heading text-lg font-semibold">
+          {filtered ? "No matches" : "Nothing here yet"}
         </p>
-        <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
+        <p className="text-sm text-muted-foreground">
           {filtered ? (
             <>
-              Try browsing{" "}
+              Try{" "}
               <Link href="/" className="font-medium text-primary hover:underline">
-                all industries
+                all ideas
               </Link>{" "}
-              or pick a different filter.
+              or tweak your filters.
             </>
           ) : (
-            "Our pipeline runs daily at 6 AM UTC. Check back soon for fresh Micro-SaaS ideas."
+            "Fresh ideas land daily. Check back soon — something good is brewing."
           )}
         </p>
       </div>
-      {!filtered && (
-        <div className="flex items-center gap-2 rounded-full border border-border/50 bg-muted/30 px-5 py-2.5 text-sm text-muted-foreground">
-          <Sparkles className="size-4 text-primary" />
-          Sourced from Reddit · Validated by AI
-        </div>
-      )}
     </div>
   );
 }

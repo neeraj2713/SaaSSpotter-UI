@@ -1,28 +1,21 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 function PainPointCardSkeleton() {
   return (
-    <Card className="border-border/60 bg-card/80">
-      <CardHeader className="flex flex-row items-center justify-between pb-3">
-        <Skeleton className="h-6 w-28 rounded-full" />
-        <Skeleton className="h-8 w-16 rounded-full" />
-      </CardHeader>
-      <CardContent className="space-y-5">
-        <div className="space-y-2">
-          <Skeleton className="h-3 w-20" />
-          <Skeleton className="h-5 w-full" />
-          <Skeleton className="h-5 w-4/5" />
+    <Card className="flex h-full flex-col rounded-2xl border-border/50 shadow-sm">
+      <CardContent className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
+        <div className="flex justify-between">
+          <Skeleton className="h-6 w-24 rounded-full" />
+          <Skeleton className="h-5 w-10 rounded-full" />
         </div>
-        <div className="space-y-3 rounded-lg border border-border/50 bg-muted/20 p-4">
-          <Skeleton className="h-3 w-28" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-        </div>
+        <Skeleton className="h-5 w-full" />
+        <Skeleton className="h-5 w-4/5" />
+        <Skeleton className="h-4 w-full" />
       </CardContent>
-      <CardFooter className="justify-between border-t border-border/40 bg-muted/20">
-        <Skeleton className="h-3 w-16" />
-        <Skeleton className="h-3 w-20" />
+      <CardFooter className="justify-between border-t border-border/40 px-4 py-2.5">
+        <Skeleton className="h-3 w-14" />
+        <Skeleton className="h-8 w-24 rounded-full" />
       </CardFooter>
     </Card>
   );
@@ -30,7 +23,7 @@ function PainPointCardSkeleton() {
 
 export function FeedSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+    <div className="grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }).map((_, i) => (
         <PainPointCardSkeleton key={i} />
       ))}

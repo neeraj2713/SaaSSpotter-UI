@@ -1,104 +1,135 @@
 "use client";
 
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getIndustryTags } from "@/lib/api";
 import { cn, COMMON_INDUSTRY_TAGS, formatIndustryTag } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { Filter } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 interface IndustryFilterBarProps {
   activeTag?: string;
-  discoveredTags: string[];
 }
 
-export function IndustryFilterBar({
-  activeTag,
-  discoveredTags,
-}: IndustryFilterBarProps) {
-  const router = useRouter();
+const PREVIEW_TAG_COUNT = 5;
 
-  const allTags = Array.from(
-    new Set([
-      ...COMMON_INDUSTRY_TAGS,
-      ...discoveredTags,
-      ...(activeTag ? [activeTag] : []),
-    ]),
-  ).sort();
+export function IndustryFilterBar({ activeTag }: IndustryFilterBarProps) {
+  const [expanded, setExpanded] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryString = searchParams.toString();
+  const suffix = queryString ? `?${queryString}` : "";
+
+  const { data } = useQuery({
+    queryKey: ["industry-tags"],
+    queryFn: getIndustryTags,
+    staleTime: 300_000,
+  });
+
+  const tags =
+    data?.tags ?? COMMON_INDUSTRY_TAGS.map((tag) => ({ tag, count: 0 }));
+
+  const visibleTags = useMemo(() => {
+    if (expanded) return tags;
+
+    const preview = tags.slice(0, PREVIEW_TAG_COUNT);
+
+    if (activeTag && !preview.some(({ tag }) => tag === activeTag)) {
+      const active = tags.find(({ tag }) => tag === activeTag);
+      if (active) {
+        if (preview.length >= PREVIEW_TAG_COUNT) {
+          preview[PREVIEW_TAG_COUNT - 1] = active;
+        } else {
+          preview.push(active);
+        }
+      }
+    }
+
+    return preview;
+  }, [tags, activeTag, expanded]);
+
+  const hiddenCount = Math.max(0, tags.length - visibleTags.length);
 
   function handleSelect(tag?: string) {
     if (!tag) {
-      router.push("/");
+      router.push(suffix ? `/${suffix}` : "/");
       return;
     }
-    router.push(`/tag/${tag}`);
+    router.push(`/tag/${tag}${suffix}`);
   }
 
   return (
-    <section className="space-y-3 rounded-2xl border border-border/40 bg-card/20 p-4 backdrop-blur-sm sm:space-y-4 sm:p-5">
-      <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground sm:text-base">
-        <Filter className="size-4 shrink-0 text-primary sm:size-5" />
-        <span>Filter by industry</span>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Industry
+        </p>
+        {tags.length > PREVIEW_TAG_COUNT && (
+          <button
+            type="button"
+            onClick={() => setExpanded((open) => !open)}
+            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
+          >
+            {expanded ? "Less" : "More"}
+            <ChevronDown
+              className={cn("size-3.5 transition-transform", expanded && "rotate-180")}
+            />
+          </button>
+        )}
       </div>
 
-      <div className="relative -mx-1">
-        <div className="scrollbar-hide flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-2 sm:flex-wrap sm:overflow-visible sm:pb-0">
+      <div
+        className={cn(
+          "scrollbar-hide flex flex-wrap gap-2",
+          expanded && "max-h-40 overflow-y-auto",
+        )}
+      >
+        <FilterChip label="All" active={!activeTag} onClick={() => handleSelect()} />
+        {visibleTags.map(({ tag, count }) => (
           <FilterChip
-            label="All"
-            active={!activeTag}
-            onClick={() => handleSelect()}
+            key={tag}
+            label={formatIndustryTag(tag)}
+            count={count}
+            active={activeTag === tag}
+            onClick={() => handleSelect(tag)}
           />
-          {allTags.map((tag) => (
-            <FilterChip
-              key={tag}
-              label={formatIndustryTag(tag)}
-              active={activeTag === tag}
-              onClick={() => handleSelect(tag)}
-            />
-          ))}
-        </div>
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background/80 to-transparent sm:hidden" />
+        ))}
+        {!expanded && hiddenCount > 0 && (
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="chip border-dashed text-primary hover:border-primary/40 hover:bg-primary/5"
+          >
+            +{hiddenCount}
+          </button>
+        )}
       </div>
-    </section>
+    </div>
   );
 }
 
 function FilterChip({
   label,
+  count,
   active,
   onClick,
 }: {
   label: string;
+  count?: number;
   active: boolean;
   onClick: () => void;
 }) {
-  const chipClassName = cn(
-    "shrink-0 snap-start whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-medium sm:px-5 sm:text-base",
-    "min-h-11 touch-manipulation",
-  );
-
-  if (active) {
-    return (
-      <HoverBorderGradient
-        as="button"
-        containerClassName="rounded-full shrink-0 snap-start"
-        className={cn(chipClassName, "bg-background font-semibold text-foreground")}
-        onClick={onClick}
-      >
-        {label}
-      </HoverBorderGradient>
-    );
-  }
-
   return (
     <button
       type="button"
       onClick={onClick}
-      className={cn(
-        chipClassName,
-        "border border-border/60 bg-background/60 text-muted-foreground backdrop-blur-sm transition-all duration-200",
-        "hover:border-primary/30 hover:bg-primary/10 hover:text-foreground active:scale-95",
-      )}
+      title={label}
+      className={cn("chip max-w-[200px] truncate", active && "chip-active")}
     >
       {label}
+      {typeof count === "number" && count > 0 && (
+        <span className="ml-1 opacity-60">{count}</span>
+      )}
     </button>
   );
 }

@@ -1,11 +1,13 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { DemandScoreBadge } from "@/components/feed/DemandScoreBadge";
-import { formatIndustryTag } from "@/lib/utils";
-import type { PainPoint } from "@/lib/types";
-import { formatDistanceToNow } from "date-fns";
-import { ArrowUpRight, Lightbulb, MessageSquareQuote } from "lucide-react";
 import Link from "next/link";
+import { formatDistanceToNow } from "date-fns";
+import { ArrowUpRight } from "lucide-react";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { DemandScoreBadge } from "@/components/feed/DemandScoreBadge";
+import { TrendingBadge } from "@/components/feed/TrendingBadge";
+import { SaveIdeaButton } from "@/components/idea/SaveIdeaButton";
+import { CompareToggleButton } from "@/components/compare/CompareToggleButton";
+import { formatIndustryTag, isTrending } from "@/lib/utils";
+import type { PainPoint } from "@/lib/types";
 
 interface PainPointCardProps {
   painPoint: PainPoint;
@@ -17,64 +19,47 @@ export function PainPointCard({ painPoint }: PainPointCardProps) {
   });
 
   return (
-    <Card className="group flex h-full flex-col rounded-2xl border-border/60 bg-card/90 text-sm shadow-lg backdrop-blur-md transition-transform duration-300 motion-safe:hover:translate-y-[-2px]">
-      <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-2 space-y-0 pb-3 sm:gap-3">
-        <Link href={`/tag/${painPoint.industry_tag}`} className="max-w-[65%] sm:max-w-none">
-          <Badge
-            variant="outline"
-            className="cursor-pointer truncate border-primary/20 bg-primary/5 px-2.5 py-0.5 text-xs text-primary hover:bg-primary/15 hover:text-primary"
-          >
-            {formatIndustryTag(painPoint.industry_tag)}
-          </Badge>
-        </Link>
-        <DemandScoreBadge score={painPoint.demand_score} />
-      </CardHeader>
-
-      <CardContent className="flex flex-1 flex-col gap-4 sm:gap-5">
-        <div className="space-y-2">
-          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            <MessageSquareQuote className="size-3.5 shrink-0" />
-            Pain point
+    <Card className="card-lift group flex h-full flex-col overflow-hidden rounded-2xl border-border/50 bg-card shadow-sm">
+      <CardContent className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+            <Link
+              href={`/tag/${painPoint.industry_tag}`}
+              className="chip chip-active max-w-full truncate !px-2.5 !py-1 !text-xs"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {formatIndustryTag(painPoint.industry_tag)}
+            </Link>
+            {isTrending(painPoint) && <TrendingBadge />}
           </div>
-          <p className="text-base font-semibold leading-relaxed text-foreground">
-            {painPoint.core_problem}
-          </p>
+          <DemandScoreBadge score={painPoint.demand_score} variant="minimal" />
         </div>
 
-        <div className="space-y-3 rounded-xl border border-border/50 bg-muted/30 p-3.5 sm:p-4">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Micro-SaaS ideas
+        <Link href={`/idea/${painPoint.id}`} className="block flex-1 space-y-2">
+          <h3 className="font-heading line-clamp-2 text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-[1.05rem]">
+            {painPoint.core_problem}
+          </h3>
+          <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+            {painPoint.saas_idea_1}
           </p>
-          <ul className="space-y-3">
-            <li className="flex gap-2.5 text-sm leading-relaxed text-foreground/90">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                <Lightbulb className="size-3.5" />
-              </span>
-              <span className="min-w-0 break-words">{painPoint.saas_idea_1}</span>
-            </li>
-            <li className="flex gap-2.5 text-sm leading-relaxed text-foreground/90">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                <Lightbulb className="size-3.5" />
-              </span>
-              <span className="min-w-0 break-words">{painPoint.saas_idea_2}</span>
-            </li>
-          </ul>
-        </div>
+        </Link>
       </CardContent>
 
-      <CardFooter className="mt-auto flex-col items-start gap-2 border-t border-border/40 bg-muted/20 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
+      <CardFooter className="mt-auto flex items-center justify-between gap-2 border-t border-border/40 bg-muted/30 px-4 py-2.5">
         <time dateTime={painPoint.created_at} className="text-xs text-muted-foreground">
           {relativeTime}
         </time>
-        <a
-          href={painPoint.source_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-primary/80 transition-colors hover:text-primary active:text-primary"
-        >
-          View source
-          <ArrowUpRight className="size-3.5" />
-        </a>
+        <div className="flex items-center gap-0.5">
+          <SaveIdeaButton painPointId={painPoint.id} iconOnly />
+          <CompareToggleButton painPointId={painPoint.id} iconOnly />
+          <Link
+            href={`/idea/${painPoint.id}`}
+            className="inline-flex items-center gap-0.5 rounded-full px-2.5 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+          >
+            Open
+            <ArrowUpRight className="size-3.5" />
+          </Link>
+        </div>
       </CardFooter>
     </Card>
   );

@@ -27,3 +27,16 @@ export const COMMON_INDUSTRY_TAGS = [
   "finance",
   "e-commerce",
 ] as const;
+
+const TRENDING_DAYS = 7;
+const TRENDING_MIN_SCORE = 7;
+
+export function isTrending(painPoint: {
+  created_at: string;
+  demand_score: number;
+}): boolean {
+  const created = new Date(painPoint.created_at);
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - TRENDING_DAYS);
+  return created >= cutoff && painPoint.demand_score >= TRENDING_MIN_SCORE;
+}
