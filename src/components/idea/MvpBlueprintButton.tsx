@@ -37,7 +37,7 @@ export function MvpBlueprintButton({ painPoint }: MvpBlueprintButtonProps) {
         </Button>
       </div>
       {open && (
-        <pre className="max-h-80 overflow-auto rounded-xl border border-border/50 bg-muted/30 p-4 text-xs leading-relaxed whitespace-pre-wrap">
+        <pre className="max-h-80 overflow-x-auto overflow-y-auto rounded-xl border border-border/50 bg-muted/30 p-4 text-xs leading-relaxed break-words whitespace-pre-wrap">
           {blueprint}
         </pre>
       )}

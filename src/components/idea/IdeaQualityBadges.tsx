@@ -57,7 +57,7 @@ export function IdeaQualityBadges({
   return (
     <div
       className={cn(
-        "surface grid gap-3 p-4 sm:grid-cols-2",
+        "surface grid min-w-0 gap-3 p-4 sm:grid-cols-[repeat(2,minmax(0,1fr))]",
         className,
       )}
     >
@@ -103,12 +103,12 @@ function QualityItem({
   value?: string | null;
 }) {
   return (
-    <div className="space-y-1">
+    <div className="min-w-0 space-y-1">
       <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        <Icon className="size-3.5" />
+        <Icon className="size-3.5 shrink-0" />
         {label}
       </div>
-      <p className="text-sm text-foreground">{value ?? "—"}</p>
+      <p className="break-words text-sm text-foreground">{value ?? "—"}</p>
     </div>
   );
 }

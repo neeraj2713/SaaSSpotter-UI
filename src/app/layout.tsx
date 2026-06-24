@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   title: "SaaSSpotter — Micro-SaaS ideas from real pain points",
   description:
     "Discover validated business pain points and actionable Micro-SaaS ideas. Turn real complaints into your next startup.",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
 };
 
 export const viewport: Viewport = {
@@ -50,7 +53,7 @@ export default function RootLayout({
             <QueryProvider>
               <AppBackground />
               <Header />
-              <main className="flex-1">{children}</main>
+              <main className="min-w-0 w-full flex-1">{children}</main>
               <Footer />
               <CompareBar />
             </QueryProvider>

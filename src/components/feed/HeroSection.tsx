@@ -16,7 +16,7 @@ export function HeroSection({ industryTag, totalCount }: HeroSectionProps) {
           <span className="text-muted-foreground">ideas</span>
         </h1>
       ) : (
-        <h1 className="font-heading text-2xl font-bold tracking-tight whitespace-nowrap sm:text-4xl lg:text-[2.75rem]">
+        <h1 className="font-heading text-balance text-2xl font-bold tracking-tight sm:text-4xl lg:text-[2.75rem]">
           Find your next <span className="text-gradient-brand">Micro-SaaS</span> idea
         </h1>
       )}

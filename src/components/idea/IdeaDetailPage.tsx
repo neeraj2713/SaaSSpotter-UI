@@ -28,7 +28,7 @@ export function IdeaDetailPage({ painPoint }: IdeaDetailPageProps) {
   });
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto min-w-0 max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
       <Link
         href="/"
         className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -37,20 +37,20 @@ export function IdeaDetailPage({ painPoint }: IdeaDetailPageProps) {
         Back
       </Link>
 
-      <div className="grid gap-10 lg:grid-cols-[1fr_280px]">
-        <article className="space-y-8">
+      <div className="grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <article className="min-w-0 space-y-8">
           <header className="space-y-4">
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
               <Link
                 href={`/tag/${painPoint.industry_tag}`}
-                className="chip chip-active !text-xs"
+                className="chip chip-active max-w-full truncate !text-xs"
               >
                 {formatIndustryTag(painPoint.industry_tag)}
               </Link>
               {painPoint.cluster_slug && (
                 <Link
                   href={`/?cluster=${painPoint.cluster_slug}`}
-                  className="chip !text-xs"
+                  className="chip max-w-full truncate !text-xs"
                 >
                   {painPoint.cluster_label}
                 </Link>
@@ -58,11 +58,11 @@ export function IdeaDetailPage({ painPoint }: IdeaDetailPageProps) {
               {isTrending(painPoint) && <TrendingBadge />}
             </div>
 
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <h1 className="max-w-2xl text-2xl font-bold leading-tight sm:text-3xl">
+            <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <h1 className="min-w-0 break-words text-2xl font-bold leading-tight sm:text-3xl">
                 {painPoint.core_problem}
               </h1>
-              <div className="flex flex-col items-end gap-2">
+              <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-end">
                 <DemandScoreBadge score={painPoint.demand_score} size="lg" />
                 <DemandScoreSparkline
                   painPointId={painPoint.id}
@@ -75,7 +75,7 @@ export function IdeaDetailPage({ painPoint }: IdeaDetailPageProps) {
             <p className="text-sm text-muted-foreground">Found {relativeTime}</p>
           </header>
 
-          <div className="space-y-6">
+          <div className="min-w-0 space-y-6">
             <EngagementSignal signal={painPoint.engagement_signal ?? ""} />
             <ScoreExplainer
               rationale={painPoint.demand_score_rationale ?? []}
@@ -91,12 +91,12 @@ export function IdeaDetailPage({ painPoint }: IdeaDetailPageProps) {
               {[painPoint.saas_idea_1, painPoint.saas_idea_2].map((idea, i) => (
                 <li
                   key={i}
-                  className="surface flex gap-3 p-4"
+                  className="surface flex min-w-0 gap-3 p-4"
                 >
                   <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <Lightbulb className="size-4" />
                   </span>
-                  <p className="text-sm leading-relaxed sm:text-base">{idea}</p>
+                  <p className="min-w-0 break-words text-sm leading-relaxed sm:text-base">{idea}</p>
                 </li>
               ))}
             </ul>
@@ -121,7 +121,7 @@ export function IdeaDetailPage({ painPoint }: IdeaDetailPageProps) {
           <ShareButtons painPoint={painPoint} />
         </article>
 
-        <aside className="lg:sticky lg:top-20 lg:self-start">
+        <aside className="min-w-0 lg:sticky lg:top-20 lg:self-start">
           <SimilarIdeas painPointId={painPoint.id} />
         </aside>
       </div>

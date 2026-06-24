@@ -46,17 +46,21 @@ export function PainPointCard({ painPoint }: PainPointCardProps) {
       </CardContent>
 
       <CardFooter className="mt-auto flex items-center justify-between gap-2 border-t border-border/40 bg-muted/30 px-4 py-2.5">
-        <time dateTime={painPoint.created_at} className="text-xs text-muted-foreground">
+        <time
+          dateTime={painPoint.created_at}
+          className="min-w-0 shrink truncate text-xs text-muted-foreground"
+        >
           {relativeTime}
         </time>
-        <div className="flex items-center gap-0.5">
+        <div className="flex shrink-0 items-center gap-0.5">
           <SaveIdeaButton painPointId={painPoint.id} iconOnly />
           <CompareToggleButton painPointId={painPoint.id} iconOnly />
           <Link
             href={`/idea/${painPoint.id}`}
-            className="inline-flex items-center gap-0.5 rounded-full px-2.5 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+            className="inline-flex size-9 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 sm:size-auto sm:gap-0.5 sm:px-2.5 sm:py-1.5"
+            aria-label="Open idea"
           >
-            Open
+            <span className="hidden text-sm font-medium sm:inline">Open</span>
             <ArrowUpRight className="size-3.5" />
           </Link>
         </div>

@@ -57,35 +57,60 @@ export function ComparePage() {
         </p>
       )}
       {!isLoading && !isError && items.length > 0 && (
-        <div className="surface mt-6 overflow-x-auto">
-          <table className="w-full min-w-[640px] border-collapse text-sm">
-            <thead>
-              <tr>
-                <th className="p-3 text-left font-medium text-muted-foreground" />
-                {items.map((item) => (
-                  <th key={item.id} className="p-3 text-left align-top">
-                    <Link href={`/idea/${item.id}`} className="font-semibold hover:text-primary">
-                      {item.core_problem.slice(0, 80)}
-                      {item.core_problem.length > 80 ? "…" : ""}
-                    </Link>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row.label} className="border-t border-border/50">
-                  <td className="p-3 font-medium text-muted-foreground">{row.label}</td>
+        <>
+          {/* Mobile: stacked cards */}
+          <div className="mt-6 space-y-4 md:hidden">
+            {items.map((item) => (
+              <div key={item.id} className="surface space-y-3 p-4">
+                <Link
+                  href={`/idea/${item.id}`}
+                  className="block font-semibold leading-snug hover:text-primary"
+                >
+                  {item.core_problem}
+                </Link>
+                <dl className="space-y-2.5 text-sm">
+                  {rows.map((row) => (
+                    <div key={row.label} className="flex items-start justify-between gap-4">
+                      <dt className="shrink-0 text-muted-foreground">{row.label}</dt>
+                      <dd className="min-w-0 text-right font-medium">{row.key(item)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: table */}
+          <div className="surface mt-6 hidden overflow-x-auto md:block">
+            <table className="w-full min-w-[640px] border-collapse text-sm">
+              <thead>
+                <tr>
+                  <th className="p-3 text-left font-medium text-muted-foreground" />
                   {items.map((item) => (
-                    <td key={item.id} className="p-3 align-top">
-                      {row.key(item)}
-                    </td>
+                    <th key={item.id} className="p-3 text-left align-top">
+                      <Link href={`/idea/${item.id}`} className="font-semibold hover:text-primary">
+                        {item.core_problem.slice(0, 80)}
+                        {item.core_problem.length > 80 ? "…" : ""}
+                      </Link>
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr key={row.label} className="border-t border-border/50">
+                    <td className="p-3 font-medium text-muted-foreground">{row.label}</td>
+                    {items.map((item) => (
+                      <td key={item.id} className="p-3 align-top">
+                        {row.key(item)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );

@@ -25,19 +25,25 @@ export function CompareBar() {
   if (ids.length === 0) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/50 bg-background/90 p-3 backdrop-blur-lg">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-3">
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <GitCompare className="size-4 text-primary" />
-          {ids.length} selected
+    <>
+      <div
+        className="h-[calc(4rem+env(safe-area-inset-bottom))] shrink-0"
+        aria-hidden
+      />
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/50 bg-background/90 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-lg">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-3">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <GitCompare className="size-4 text-primary" />
+            {ids.length} selected
+          </div>
+          <Link
+            href={`/compare?ids=${ids.join(",")}`}
+            className={cn(buttonVariants(), "h-10 rounded-full px-5")}
+          >
+            Compare
+          </Link>
         </div>
-        <Link
-          href={`/compare?ids=${ids.join(",")}`}
-          className={cn(buttonVariants(), "h-10 rounded-full px-5")}
-        >
-          Compare
-        </Link>
       </div>
-    </div>
+    </>
   );
 }

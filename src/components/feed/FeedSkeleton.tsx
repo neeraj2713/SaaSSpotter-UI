@@ -23,10 +23,16 @@ function PainPointCardSkeleton() {
 
 export function FeedSkeleton() {
   return (
-    <div className="grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <PainPointCardSkeleton key={i} />
-      ))}
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mb-8 space-y-3 sm:mb-10">
+        <Skeleton className="h-8 w-full max-w-sm sm:h-10" />
+        <Skeleton className="h-4 w-full max-w-lg" />
+      </div>
+      <div className="grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <PainPointCardSkeleton key={i} />
+        ))}
+      </div>
     </div>
   );
 }

@@ -71,9 +71,9 @@ export function AlertsPageContent() {
               key={watch.id}
               className="surface flex items-center justify-between gap-3 p-4"
             >
-              <div>
-                <p className="font-medium">{watch.label ?? "Custom watch"}</p>
-                <p className="text-sm text-muted-foreground">
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium">{watch.label ?? "Custom watch"}</p>
+                <p className="line-clamp-2 text-sm text-muted-foreground">
                   {watch.keywords.length > 0 && `Keywords: ${watch.keywords.join(", ")}`}
                   {watch.tags.length > 0 &&
                     ` Tags: ${watch.tags.map(formatIndustryTag).join(", ")}`}
@@ -82,7 +82,7 @@ export function AlertsPageContent() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="size-11"
+                className="size-11 shrink-0"
                 onClick={() => deleteMutation.mutate(watch.id)}
               >
                 <Trash2 className="size-4" />

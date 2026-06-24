@@ -25,6 +25,13 @@ export function Header() {
         </Link>
 
         <nav className="flex items-center gap-0.5 sm:gap-1">
+          <Link
+            href="/digest"
+            className="flex size-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:hidden"
+            aria-label="Digest"
+          >
+            <Sparkles className="size-[18px] text-play" />
+          </Link>
           <Link href="/digest" className={navLinkClass}>
             <Sparkles className="size-4 text-play" />
             Digest
@@ -50,7 +57,7 @@ export function Header() {
             <SignInButton mode="modal">
               <button
                 type="button"
-                className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
+                className="rounded-full bg-foreground px-3 py-2 text-xs font-medium text-background transition-opacity hover:opacity-90 sm:px-4 sm:text-sm"
               >
                 Sign in
               </button>
