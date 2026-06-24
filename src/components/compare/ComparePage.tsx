@@ -12,7 +12,7 @@ export function ComparePage() {
   const searchParams = useSearchParams();
   const ids = (searchParams.get("ids") ?? "").split(",").filter(Boolean).slice(0, 3);
 
-  const { data: items = [], isLoading } = useQuery({
+  const { data: items = [], isLoading, isError, error } = useQuery({
     queryKey: ["compare", ids],
     queryFn: () => getPainPointsBatch(ids),
     enabled: ids.length > 0,
@@ -46,7 +46,17 @@ export function ComparePage() {
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
       <h1 className="font-heading text-2xl font-bold sm:text-3xl">Compare</h1>
       {isLoading && <p className="mt-4 text-muted-foreground">Loading…</p>}
-      {!isLoading && (
+      {isError && (
+        <p className="mt-4 text-sm text-destructive">
+          {error instanceof Error ? error.message : "Could not load ideas to compare."}
+        </p>
+      )}
+      {!isLoading && !isError && items.length === 0 && (
+        <p className="mt-4 text-sm text-muted-foreground">
+          No ideas found for the selected IDs. Try adding them again from the feed.
+        </p>
+      )}
+      {!isLoading && !isError && items.length > 0 && (
         <div className="surface mt-6 overflow-x-auto">
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>

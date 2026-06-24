@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Bell, Search } from "lucide-react";
+import { Bell, ChevronDown, Search } from "lucide-react";
 import type { SortField } from "@/lib/types";
 import { cn, formatIndustryTag } from "@/lib/utils";
 import { useCreateWatch } from "@/components/alerts/AlertsPageContent";
@@ -72,15 +72,21 @@ export function FeedToolbar({ industryTag, total }: FeedToolbarProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <select
-            value={urlSort}
-            onChange={(e) => pushParams({ sort: e.target.value as SortField })}
-            className="h-10 rounded-full border border-border/60 bg-background px-3 text-sm focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/15"
-            aria-label="Sort by"
-          >
-            <option value="created_at">Newest</option>
-            <option value="demand_score">Top demand</option>
-          </select>
+          <div className="relative shrink-0">
+            <select
+              value={urlSort}
+              onChange={(e) => pushParams({ sort: e.target.value as SortField })}
+              className="h-10 w-auto appearance-none rounded-full border border-border/60 bg-background py-0 pl-3.5 pr-8 text-sm focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/15"
+              aria-label="Sort by"
+            >
+              <option value="created_at">Newest</option>
+              <option value="demand_score">Top demand</option>
+            </select>
+            <ChevronDown
+              className="pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
+          </div>
 
           <button
             type="button"
